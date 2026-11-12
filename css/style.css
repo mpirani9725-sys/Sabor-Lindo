@@ -1,0 +1,586 @@
+
+/* ==================================
+   PORTAL RESTAURANTE - ESTILOS
+================================== */
+
+:root {
+    --verde-escuro: #084c01;
+    --verde: #149b02;
+    --verde-claro: #24cb02;
+    --azul: #1993b2;
+    --azul-botao: #007bff;
+    --amarelo: #ffc107;
+    --vermelho: #dc3545;
+    --branco: #ffffff;
+    --fundo: #f0f4f2;
+    --texto: #222222;
+    --borda: #dddddd;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1993b2, #084c01);
+    color: var(--texto);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+button:hover {
+    filter: brightness(0.9);
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* MENU */
+
+.menu {
+    width: 250px;
+    min-width: 250px;
+    background: var(--verde-escuro);
+    color: white;
+    padding: 22px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu h2 {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.menu-subtitle {
+    text-align: center;
+    color: #c8e8c3;
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+.menu nav {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.nav-btn {
+    width: 100%;
+    padding: 13px 10px;
+    border-radius: 7px;
+    color: white;
+    background: #149b02;
+    text-align: left;
+    font-weight: bold;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: #b7d304;
+    color: #111;
+}
+
+.menu-footer {
+    margin-top: auto;
+    padding-top: 25px;
+    text-align: center;
+    font-size: 11px;
+    color: #c8e8c3;
+}
+
+/* CONTEÚDO */
+
+.conteudo {
+    flex: 1;
+    min-width: 0;
+    padding: 25px;
+    overflow-x: hidden;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    color: white;
+    margin-bottom: 30px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.topbar h1 {
+    font-size: 27px;
+}
+
+.topbar p {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+#relogio {
+    font-size: 15px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.tela {
+    display: none;
+}
+
+.tela.ativa {
+    display: block;
+}
+
+.tela > h2 {
+    color: white;
+    margin-bottom: 12px;
+    font-size: 25px;
+}
+
+.descricao {
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* CARDS */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 18px;
+    margin: 20px 0;
+}
+
+.card {
+    background: white;
+    color: #111;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.card h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.card p {
+    font-size: 27px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.card small {
+    display: block;
+    margin-top: 8px;
+    color: #666;
+}
+
+/* CAIXAS */
+
+.box {
+    background: white;
+    color: #222;
+    padding: 22px;
+    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.box h3 {
+    margin-bottom: 18px;
+}
+
+/* FORMULÁRIOS */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 13px;
+    align-items: center;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    background: white;
+    color: #222;
+    outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--azul);
+    box-shadow: 0 0 0 2px rgba(25,147,178,0.15);
+}
+
+textarea {
+    min-height: 75px;
+    resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #777;
+}
+
+/* BOTÕES */
+
+.btn-green,
+.btn-red,
+.btn-blue,
+.btn-yellow,
+.btn-edit,
+.btn-delete {
+    padding: 11px 14px;
+    border-radius: 7px;
+    font-weight: bold;
+    color: white;
+}
+
+.btn-green {
+    background: var(--verde);
+}
+
+.btn-red,
+.btn-delete {
+    background: var(--vermelho);
+}
+
+.btn-blue,
+.btn-edit {
+    background: var(--azul-botao);
+}
+
+.btn-yellow {
+    background: var(--amarelo);
+    color: #222;
+}
+
+.atalhos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.atalhos button {
+    min-width: 150px;
+}
+
+/* TABELAS */
+
+.table-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 10px;
+}
+
+th,
+td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-size: 13px;
+}
+
+th {
+    background: #4493fb;
+    color: white;
+    white-space: nowrap;
+}
+
+td {
+    overflow-wrap: anywhere;
+}
+
+tbody tr:hover {
+    background: #f3f8f5;
+}
+
+td button {
+    margin: 2px;
+    padding: 8px 10px;
+    border-radius: 5px;
+    color: white;
+    font-size: 12px;
+}
+
+/* STATUS */
+
+.status {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.livre,
+.alto {
+    background: #c8f9cc;
+    color: #087f23;
+}
+
+.ocupada,
+.baixo {
+    background: #ffd1d1;
+    color: #b30000;
+}
+
+.reservada,
+.medio {
+    background: #fff0a8;
+    color: #856404;
+}
+
+.status-pendente {
+    background: #fff0a8;
+    color: #856404;
+}
+
+.status-preparo {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-pronto {
+    background: #c8f9cc;
+    color: #087f23;
+}
+
+.status-entregue {
+    background: #e5d5ff;
+    color: #54278f;
+}
+
+.status-cancelado {
+    background: #ffd1d1;
+    color: #b30000;
+}
+
+/* MESAS */
+
+.mesas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.mesa-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-top: 7px solid var(--verde);
+}
+
+.mesa-card.ocupada-card {
+    border-top-color: var(--vermelho);
+}
+
+.mesa-card.reservada-card {
+    border-top-color: var(--amarelo);
+}
+
+.mesa-numero {
+    font-size: 23px;
+    font-weight: bold;
+    margin-bottom: 14px;
+}
+
+.mesa-info {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.mesa-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.mesa-acoes button {
+    flex: 1;
+    min-width: 90px;
+}
+
+/* PONTO */
+
+.relogio-ponto {
+    font-size: 19px;
+    font-weight: bold;
+    color: white;
+    margin: 15px 0;
+}
+
+/* RH */
+
+#resultadoRH {
+    margin-top: 20px;
+}
+
+.resumo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.resumo .box {
+    margin: 0;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.valor {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* RODAPÉ */
+
+.rodape {
+    text-align: center;
+    color: white;
+    padding: 25px 10px 10px;
+    font-size: 12px;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 900px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .menu {
+        width: 100%;
+        min-width: 0;
+        padding: 15px;
+    }
+
+    .menu nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .menu-footer {
+        margin-top: 15px;
+    }
+
+    .conteudo {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar h1 {
+        font-size: 22px;
+    }
+
+    #relogio {
+        text-align: left;
+    }
+
+    .menu nav {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .nav-btn {
+        font-size: 12px;
+        padding: 11px 7px;
+    }
+
+    .conteudo {
+        padding: 12px;
+    }
+
+    .tela > h2 {
+        font-size: 21px;
+    }
+
+    .box {
+        padding: 14px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .card {
+        padding: 14px;
+    }
+
+    .card h3 {
+        font-size: 13px;
+    }
+
+    .card p {
+        font-size: 21px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .atalhos {
+        flex-direction: column;
+    }
+
+    .atalhos button {
+        width: 100%;
+    }
+
+    table {
+        min-width: 650px;
+    }
+}
+
+@media (max-width: 360px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
