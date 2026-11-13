@@ -1,0 +1,279 @@
+"use strict";
+
+/* FUNÇÕES GERAIS */
+function mostrarTela(id){
+  document.querySelectorAll(".tela").forEach(tela=>tela.classList.remove("ativa"));
+  const selecionada=document.getElementById(id);
+    if(selecionada) selecionada.classList.add("ativa");
+ }
+function moeda(valor){
+  return Number(valor||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+}
+function carregarLista(chave){
+  try{return JSON.parse(localStorage.getItem(chave))||[];}
+  catch(erro){console.warn("Falha ao carregar "+chave,erro);return [];}
+}
+function atualizarRelogio(){
+  const el=document.getElementById("relogio");
+    if(el){const agora=new Date();el.textContent=" Portal Restaurante • Código original organizado Página 9
+      registrosPonto.forEach((r,i)=>{
+              const tr=document.createElement("tr");
+              [r.nome,r.funcao,r.data,r.entrada,r.saida||"-",r.total||"-"].forEach(v=>{const 
+                td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
+           const td=document.createElement("td"),btn=document.createElement("button");btn.className="btn-delete";bt
+             n.textContent="Excluir";btn.onclick=()=>deletarPonto(i);td.appendChild(btn);tr.appendChild(td);tabela.appendChild(tr);
+          });
+}
+
+/* FUNCIONÁRIOS */
+let funcionarios=carregarLista("funcionarios");
+function cadastrarFuncionario(){
+  const nome=document.getElementById("nomeFuncionario").value.trim();
+  const cargo=document.getElementById("cargo").value.trim();
+  const telefone=document.getElementById("telefone").value.trim();
+  const salarioTexto=document.getElementById("salarioFuncionario").value;
+  const salario=Number(salarioTexto),status=document.getElementById("statusFuncionario").value;
+  
+  if(!nome||!cargo||!telefone||salarioTexto===""||salario<0){alert("Preencha todos os campos 
+ corretamente.");return;}
+  funcionarios.push({id:Date.now(),nome,cargo,telefone,salario,status});
+  localStorage.setItem("funcionarios",JSON.stringify(funcionarios));renderizarFuncionarios();
+ ["nomeFuncionario","cargo","telefone","salarioFuncionario"].forEach(id=>document.getElementById(id).value=
+ "");
+  document.getElementById("statusFuncionario").value="Ativo";
+}
+function removerFuncionario(id){
+  if(!confirm("Deseja remover este funcionário?"))return;
+  funcionarios=funcionarios.filter(f=>f.id!==id);localStorage.setItem("funcionarios",JSON.stringify(funcionari
+ os));renderizarFuncionarios();
+}
+function renderizarFuncionarios(){
+  const tabela=document.getElementById("tabelaFuncionarios");if(!tabela)return;tabela.innerHTML="";
+  if(!funcionarios.length)tabela.innerHTML='<tr><td colspan="6" class="vazio">Nenhum funcionário 
+ cadastrado.</td></tr>';
+  funcionarios.forEach(f=>{
+    const tr=document.createElement("tr");
+    [f.nome,f.cargo,f.telefone,moeda(f.salario),f.status].forEach(v=>{const 
+ td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
+    const td=document.createElement("td"),btn=document.createElement("button");btn.className="btn-delete";bt
+ n.textContent="Excluir";btn.onclick=()=>removerFuncionario(f.id);td.appendChild(btn);tr.appendChild(td);ta
+ bela.appendChild(tr);
+  });
+  atualizarRelatorios();
+}
+ /* ESTOQUE */
+let estoque=carregarLista("estoque");
+function statusEstoque(qtd){
+  if(qtd<=5)return {texto:"BAIXO",classe:"baixo"};
+  if(qtd<=15)return {texto:"MÉDIO",classe:"medio"};
+  return {texto:"ALTO",classe:"alto"};
+}
+function adicionarProduto(){
+  const produto=document.getElementById("produto").value.trim();
+  const qtdTexto=document.getElementById("quantidade").value,precoTexto=document.getElementById("preco").value;
+  const quantidade=Number(qtdTexto),preco=Number(precoTexto),categoria=document.getElementById("categoria").value;
+  if(!produto||qtdTexto===""||precoTexto===""||!categoria||quantidade<0||preco<0){alert("Preencha todos os Portal Restaurante • Código original organizado Página 10
+ campos corretamente.");return;}
+  estoque.push({id:Date.now(),produto,quantidade,preco,categoria});
+  localStorage.setItem("estoque",JSON.stringify(estoque));
+  ["produto","quantidade","preco","categoria"].forEach(id=>document.getElementById(id).value="");
+  renderizarTabela();
+}
+
+function editarProduto(id){
+  const item=estoque.find(p=>p.id===id);if(!item)return;
+  const nome=prompt("Editar produto:",item.produto);if(nome===null)return;
+  const qtd=prompt("Editar quantidade:",item.quantidade);if(qtd===null)return;
+  const preco=prompt("Editar preço:",item.preco);if(preco===null)return;
+  if(!nome.trim()||qtd.trim()===""||preco.trim()===""||!Number.isFinite(Number(qtd))||!Number.isFinite(Number(
+ preco))||Number(qtd)<0||Number(preco)<0){alert("Dados inválidos.");return;}
+  Object.assign(item,{produto:nome.trim(),quantidade:Number(qtd),preco:Number(preco)});
+  localStorage.setItem("estoque",JSON.stringify(estoque));renderizarTabela();
+}
+
+function deletarProduto(id){
+  if(!confirm("Deseja remover este produto?"))return;
+ estoque=estoque.filter(p=>p.id!==id);localStorage.setItem("estoque",JSON.stringify(estoque));renderizarTab
+ ela();
+}
+function renderizarTabela(){
+  const tabela=document.getElementById("tabelaProdutos");if(!tabela)return;tabela.innerHTML="";
+  let valorTotal=0,baixo=0;
+    if(!estoque.length)tabela.innerHTML='<tr><td colspan="7" class="vazio">Nenhum produto 
+ cadastrado.</td></tr>';
+  estoque.forEach(p=>{
+    const st=statusEstoque(Number(p.quantidade)),total=Number(p.quantidade)*Number(p.preco);valorTotal+=tota
+ l;if(Number(p.quantidade)<=5)baixo++;
+    const tr=document.createElement("tr");
+    [p.produto,p.categoria,p.quantidade,moeda(p.preco),moeda(total)].forEach(v=>{const 
+ td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
+    const tdStatus=document.createElement("td");tdStatus.textContent=st.texto;tdStatus.className=st.classe;t
+ r.appendChild(tdStatus);
+    const td=document.createElement("td"),editar=document.createElement("button"),excluir=document.createEle
+ ment("button");
+    editar.className="btn-edit";editar.textContent="✏ Portal Restaurante • Código original organizado Página 11
+      const valor=Number(document.getElementById("valorMesa").value)||0,status=document.getElementById("statusMesa").v
+ alue;
+      if(!nTexto||n<1||valor<0){alert("Informe um número e um valor válidos.");return;}
+    const mesa=mesas.find(m=>Number(m.numero)===n);
+      if(mesa)Object.assign(mesa,{cliente,pessoas,valor,status});else 
+ mesas.push({numero:n,cliente,pessoas,valor,status});
+    salvarMesas();limparMesaForm();renderizarMesas();
+  }
+  function abrirMesa(numero){
+    const mesa=mesas.find(m=>Number(m.numero)===Number(numero));if(!mesa)return;
+    const cliente=prompt("Nome do cliente:",mesa.cliente||"");if(cliente===null)return;
+    const pessoasTexto=prompt("Quantidade de pessoas:",String(mesa.pessoas||1));if(pessoasTexto===null)return;
+    const pessoas=Number(pessoasTexto);if(!Number.isInteger(pessoas)||pessoas<1){alert("Quantidade 
+ inválida.");return;}
+      Object.assign(mesa,{status:"ocupada",cliente:cliente.trim(),pessoas});salvarMesas();renderizarMesas();
+  }
+  function fecharMesa(numero){
+    const mesa=mesas.find(m=>Number(m.numero)===Number(numero));if(!mesa)return;
+    const total=pedidos.filter(p=>Number(p.mesa)===Number(numero)&&p.status!=="Cancelado").reduce((s,p)=>s+Numbe
+ r(p.total||0),0);
+    let valor=total;
+    if(valor===0){const informado=prompt("Valor final da 
+ conta:",String(mesa.valor||0));if(informado===null)return;valor=Number(informado);}
+      if(!Number.isFinite(valor)||valor<0){alert("Valor inválido.");return;}
+    if(!confirm(`Fechar Mesa ${numero}?\n\nTotal: ${moeda(valor)}`))return;
+                               Object.assign(mesa,{valor:0,status:"livre",cliente:"",pessoas:0});
+                               salvarMesas();renderizarMesas();
+                              }
+    function liberarMesa(numero){
+      const mesa=mesas.find(m=>Number(m.numero)===Number(numero));if(!mesa)return;
+      Object.assign(mesa,{status:"livre",cliente:"",pessoas:0,valor:0});salvarMesas();renderizarMesas();
+    }
+    function editarMesa(numero){
+      const m=mesas.find(item=>Number(item.numero)===Number(numero));if(!m)return;
+      document.getElementById("numeroMesa").value=m.numero;document.getElementById("clienteMesa").value=m.cliente;
+      document.getElementById("pessoasMesa").value=m.pessoas;document.getElementById("valorMesa").value=m.valor;
+      document.getElementById("statusMesa").value=m.status;mostrarTela("mesas");
+    }
+    function renderizarMesas(){
+      const grid=document.getElementById("mesasGrid");if(!grid)return;grid.innerHTML="";
+      mesas.forEach(m=>{
+        const card=document.createElement("div");card.className="mesa-card";
+        if(m.status==="ocupada")card.classList.add("ocupada-card");
+        const status={livre:" Portal Restaurante • Código original organizado Página 12
+          atualizarResumoMesas();
+      }
+      function atualizarResumoMesas(){
+        document.getElementById("totalMesasLivres").textContent=mesas.filter(m=>m.status==="livre").length;
+        document.getElementById("totalMesasOcupadas").textContent=mesas.filter(m=>m.status==="ocupada").length;
+        document.getElementById("totalMesasReservadas").textContent=mesas.filter(m=>m.status==="reservada").length;
+        const total=mesas.filter(m=>m.status==="ocupada").reduce((s,m)=>s+Number(m.valor||0),0);
+        document.getElementById("faturamentoMesas").textContent=moeda(total);
+      }
+/* PEDIDOS */
+      let pedidos=carregarLista("pedidos");
+      function salvarPedidos(){localStorage.setItem("pedidos",JSON.stringify(pedidos));}
+      function adicionarPedido(){
+        const mesa=Number(document.getElementById("mesaPedido").value),cliente=document.getElementById("clientePedid
+ o").value.trim(); 
+        const produto=document.getElementById("produtoPedido").value.trim(),quantidade=Number(document.getElementByI
+ d("quantidadePedido").value);
+        const valorTexto=document.getElementById("valorUnitarioPedido").value,valorUnitario=Number(valorTexto);
+        const status=document.getElementById("statusPedido").value;
+          if(!mesa||!produto||quantidade<=0||valorTexto===""||valorUnitario<0){alert("Preencha os dados do pedido 
+ corretamente.");return;}
+            if(!mesas.some(m=>Number(m.numero)===mesa)){alert("Essa mesa não está cadastrada.");return;}
+        pedidos.push({id:Date.now(),mesa,cliente,produto,quantidade,valorUnitario,total:quantidade*valorUnitario,sta
+ tus,horario:new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})});
+        salvarPedidos();atualizarValorMesa(mesa);limparPedido();renderizarPedidos();
+      }
+      function limparPedido(){
+        document.getElementById("mesaPedido").value="";document.getElementById("clientePedido").value="";
+        document.getElementById("produtoPedido").value="";document.getElementById("quantidadePedido").value="1";
+        document.getElementById("valorUnitarioPedido").value="";document.getElementById("statusPedido").value="Pende
+ nte";
+      }
+      function atualizarValorMesa(numero){
+const mesa=mesas.find(m=>Number(m.numero)===Number(numero));if(!mesa)return;
+ mesa.valor=pedidos.filter(p=>Number(p.mesa)===Number(numero)&&p.status!=="Cancelado").reduce((s,p)=>s+Number
+ (p.total||0),0);
+        salvarMesas();renderizarMesas();
+      }
+      function alterarStatusPedido(id,status){
+        const p=pedidos.find(item=>item.id===id);if(!p)return;p.status=status;salvarPedidos();renderizarPedidos();atualizarValorMesa(p.mesa);
+      }
+      function cancelarPedido(id){
+        const p=pedidos.find(item=>item.id===id);if(!p||["Entregue","Cancelado"].includes(p.status))return;
+        if(!confirm("Deseja cancelar este pedido?"))return;p.status="Cancelado";salvarPedidos();renderizarPedidos();atualizarValorMesa(p.mesa);
+      }
+      function excluirPedido(id){
+        const p=pedidos.find(item=>item.id===id);if(!p)return;
+        if(!confirm("Deseja excluir este pedido do histórico?"))return;
+        pedidos=pedidos.filter(item=>item.id!==id);salvarPedidos();renderizarPedidos();atualizarValorMesa(p.mesa);
+      }
+function botoesPedido(p){
+  let html="";
+  if(p.status==="Pendente")html+=`<button class="btn-blue" onclick="alterarStatusPedido(${p.id},'Em 
+ preparo')">Preparar</button>`;
+    else if(p.status==="Em preparo")html+=`<button class="btn-green" 
+ onclick="alterarStatusPedido(${p.id},'Pronto')">Pronto</button>`;
+  else if(p.status==="Pronto")html+=`<button class="btn-green" 
+ onclick="alterarStatusPedido(${p.id},'Entregue')">Entregue</button>`; Portal Restaurante • Código original organizado Página 13
+    if(!["Entregue","Cancelado"].includes(p.status))html+=`<button class="btn-yellow" 
+ onclick="cancelarPedido(${p.id})">Cancelar</button>`;
+  html+=`<button class="btn-delete" onclick="excluirPedido(${p.id})"> Portal Restaurante • Código original organizado Página 14
+  const avos=Math.max(0,Math.min(12,Number(document.getElementById("avos13").value)||0));
+  const descontos=Number(document.getElementById("descontos13").value)||0;
+    if(salario<0||descontos<0){alert("Informe valores válidos.");return null;}
+  const bruto=salario*avos/12,primeira=bruto/2,liquido=Math.max(0,bruto-descontos);
+  document.getElementById("resultado13").innerHTML=`
+    <div class="resumo">
+    <div class="box"><strong>Avos</strong><p>${avos}/12</p></div>
+    <div class="box"><strong>13º bruto</strong><p>${moeda(bruto)}</p></div>
+    <div class="box"><strong>1ª parcela (referência)</strong><p>${moeda(primeira)}</p></div>
+  <div class="box"><strong>Descontos informados</strong><p>${moeda(descontos)}</p></div>
+      <div class="box"><strong>Líquido estimado</strong><p>${moeda(liquido)}</p></div></div>`;
+  return {bruto,primeira,liquido,avos,descontos};
+}
+function salvar13(){
+  const c=calcular13();if(!c)return;
+  const funcionario=document.getElementById("funcionario13").value.trim(),ano=Number(document.getElementById("
+ ano13").value);
+  if(!funcionario||!ano){alert("Informe o funcionário e o ano.");return;}
+  decimos.push({id:Date.now(),funcionario,ano,avos:c.avos,bruto:c.bruto,descontos:c.descontos,liquido:c.liquid
+ o,status:"Pendente"});
+  localStorage.setItem("decimos",JSON.stringify(decimos));renderizar13();alert("13º salvo no protótipo.");
+}
+function limpar13(){
+  ["funcionario13","salario13","admissao13"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("ano13").value=new 
+ Date().getFullYear();document.getElementById("avos13").value="12";
+  document.getElementById("descontos13").value="0";document.getElementById("resultado13").innerHTML="";
+}
+function renderizar13(){
+  const tabela=document.getElementById("tabela13");if(!tabela)return;tabela.innerHTML="";
+  if(!decimos.length){tabela.innerHTML='<tr><td colspan="7" class="vazio">Nenhum cálculo 
+ salvo.</td></tr>';return;}
+  decimos.forEach(d=>{
+    const tr=document.createElement("tr");
+    [d.funcionario,d.ano,`${d.avos}/12`,moeda(d.bruto),moeda(d.descontos),moeda(d.liquido),d.status].forEach
+ (v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
+                            tabela.appendChild(tr);
+                           });
+  }
+/* RELATÓRIOS E PROTEÇÃO DE TEXTO */
+function atualizarRelatorios(){
+  const dados={relatorioReciclados:reciclados.length,relatorioProdutos:estoque.length,relatorioPedidos:pedidos
+ .length,relatorioFuncionarios:funcionarios.length};
+  Object.entries(dados).forEach(([id,valor])=>{const 
+ el=document.getElementById(id);if(el)el.textContent=valor;});
+}
+ function escapeHTML(valor){
+   return 
+ String(valor).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+/* INICIALIZAÇÃO */
+inicializarMesas();
+renderizarPonto();
+renderizarFuncionarios();
+renderizarTabela();
+renderizarMesas();
+renderizarPedidos();
+renderizarReciclados();
+renderizar13(); Portal Restaurante • Código original organizado Página 15
+atualizarRelatorios();
